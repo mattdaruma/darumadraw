@@ -1,0 +1,30 @@
+{
+  "name": "darumadraw",
+  "version": "1.0.0",
+  "description": "Draw daruma avatars and reactions",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattdaruma/darumadraw.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mattdaruma/darumadraw/issues"
+  },
+  "homepage": "https://github.com/mattdaruma/darumadraw#readme",
+  "dependencies": {
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "canvas": "^2.8.0",
+    "color": "^4.0.1",
+    "discord-api-types": "^0.23.1",
+    "discord.js": "^13.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.9.2"
+  }
+}
