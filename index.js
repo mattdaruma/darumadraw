@@ -14,14 +14,14 @@ client.on("ready", () => {
 });
 client.on("messageCreate", (message) => {
   console.l;
-  if (!message.content.startsWith("-d")) return;
+  if (!message.content.trim().toLowerCase().startsWith("-d")) return;
   let seeds = {
     red: Math.floor(parseInt(message.author.id.substring(0, 6)) % 255),
     green: Math.floor(parseInt(message.author.id.substring(6, 12)) % 255),
     blue: Math.floor(parseInt(message.author.id.substring(12, 18)) % 255),
   };
   let color = `rgb(${seeds.red},${seeds.green},${seeds.blue})`;
-  let command = message.content.toLowerCase().split(" ");
+  let command = message.content.trim().toLowerCase().split(" ");
   switch (command[1]) {
     case "neko":
       message.channel.send({
@@ -49,6 +49,16 @@ client.on("messageCreate", (message) => {
           {
             attachment: draw.drawBase(color),
             name: `d-base-${message.author.id}.png`,
+          },
+        ],
+      });
+      return;
+    case "say":
+      message.channel.send({
+        files: [
+          {
+            attachment: draw.say(color, message.content.substring(message.content.toLowerCase().indexOf('say') + 3, message.content.length)),
+            name: `d-say-${message.author.id}.png`,
           },
         ],
       });
