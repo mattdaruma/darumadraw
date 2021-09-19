@@ -4,7 +4,7 @@ const { createCanvas, loadImage } = require('canvas')
 const canvas = createCanvas(config.canvasSize, config.canvasSize)
 const ctx = canvas.getContext('2d')
 const Color = require('color')
-
+const GIFEncoder = require('gifencoder')
 const colors = {
     bodyColor: null,
     faceColor: null,
@@ -126,18 +126,30 @@ module.exports = {
         return canvas.toBuffer('image/png')
     },
     drawAngry: (color) => {
-        initCanvas(color)
+        initCanvas('#000000')
         drawAngryEyebrows()
         drawStraightMouth()
         return canvas.toBuffer('image/png')
     },
     drawNeko: (color) => {
-        initCanvas(color)
+        initCanvas("#F00")
         drawNekoMouth()
         return canvas.toBuffer('image/png')
     },
     say: (color, message) => {
         initCanvas(color)
+        // const encoder = new GIFEncoder(config.canvasSize, config.canvasSize)
+        // let chunks = []
+        // let readStream = encoder.createReadStream()
+        // readStream.on('data', data => {
+        //     chunks.push(data)
+        // })
+        // readStream.on('end', ()=>{
+
+        // })
+        // encoder.start()
+        // encoder.setRepeat(0)
+        // encoder.setDelay(1000)
         drawSpeakingMouth()
         drawSpeechText(message)
         return canvas.toBuffer('image/png')
