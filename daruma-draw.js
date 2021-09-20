@@ -4,7 +4,7 @@ const { createCanvas, loadImage } = require('canvas')
 const canvas = createCanvas(config.canvasSize, config.canvasSize)
 const ctx = canvas.getContext('2d')
 const Color = require('color')
-const GIFEncoder = require('gifencoder')
+const GIFEncoder = require('gif-encoder-2')
 const colors = {
     bodyColor: null,
     faceColor: null,
@@ -101,8 +101,28 @@ const drawSpeakingMouth = () => {
     ctx.lineWidth = 3
     ctx.fillStyle = colors.outlineColor.rgb().string()
     ctx.beginPath()
-    ctx.arc(config.canvasSize*.5, config.canvasSize*.49, config.canvasSize*.1, 0, Math.PI)
+    ctx.arc(config.canvasSize*.5, config.canvasSize*.48, config.canvasSize*.1, 0, Math.PI)
     ctx.fill()
+    ctx.strokeStyle = colors.faceColor.rgb().string()
+    ctx.lineWidth = 4
+    ctx.beginPath()
+    ctx.moveTo(config.canvasSize*.3, config.canvasSize*.48)
+    ctx.lineTo(config.canvasSize*.7, config.canvasSize*.48)
+    ctx.stroke()
+}
+
+const drawSmilingMouth = () => {
+    ctx.lineWidth = 3
+    ctx.strokeStyle = colors.outlineColor.rgb().string()
+    ctx.beginPath()
+    ctx.arc(config.canvasSize*.5, config.canvasSize*.48, config.canvasSize*.1, 0, Math.PI)
+    ctx.stroke()
+    ctx.strokeStyle = colors.faceColor.rgb().string()
+    ctx.lineWidth = 4
+    ctx.beginPath()
+    ctx.moveTo(config.canvasSize*.3, config.canvasSize*.48)
+    ctx.lineTo(config.canvasSize*.7, config.canvasSize*.48)
+    ctx.stroke()
 }
 
 const drawSpeechText = (message) => {
@@ -126,32 +146,27 @@ module.exports = {
         return canvas.toBuffer('image/png')
     },
     drawAngry: (color) => {
-        initCanvas('#000000')
+        initCanvas(color)
         drawAngryEyebrows()
         drawStraightMouth()
         return canvas.toBuffer('image/png')
     },
     drawNeko: (color) => {
-        initCanvas("#F00")
+        initCanvas(color)
         drawNekoMouth()
         return canvas.toBuffer('image/png')
     },
     say: (color, message) => {
         initCanvas(color)
-        // const encoder = new GIFEncoder(config.canvasSize, config.canvasSize)
-        // let chunks = []
-        // let readStream = encoder.createReadStream()
-        // readStream.on('data', data => {
-        //     chunks.push(data)
-        // })
-        // readStream.on('end', ()=>{
-
-        // })
-        // encoder.start()
-        // encoder.setRepeat(0)
-        // encoder.setDelay(1000)
-        drawSpeakingMouth()
+        let encoder = new GIFEncoder(config.canvasSize, config.canvasSize)
+        encoder.setDelay(500)
+        encoder.start()
+        drawSmilingMouth()
         drawSpeechText(message)
-        return canvas.toBuffer('image/png')
+        encoder.addFrame(ctx)
+        drawSpeakingMouth()
+        encoder.addFrame(ctx)
+        encoder.finish()
+        return encoder.out.getData()
     }
 }

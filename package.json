@@ -23,7 +23,7 @@
     "color": "^4.0.1",
     "discord-api-types": "^0.23.1",
     "discord.js": "^13.1.0",
-    "gifencoder": "^2.0.1"
+    "gif-encoder-2": "^1.0.5"
   },
   "devDependencies": {
     "@types/node": "^16.9.2"

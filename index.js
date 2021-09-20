@@ -58,7 +58,7 @@ client.on("messageCreate", (message) => {
         files: [
           {
             attachment: draw.say(color, message.content.substring(message.content.toLowerCase().indexOf('say') + 3, message.content.length)),
-            name: `d-say-${message.author.id}.png`,
+            name: `d-say-${message.author.id}.gif`,
           },
         ],
       });
