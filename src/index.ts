@@ -1,7 +1,26 @@
 import path = require('path')
 import fs = require('fs')
 import { Message, Client, Intents} from 'discord.js'
-import { Daruma } from './daruma'
+import { Daruma, Moods } from './daruma'
+
+const HELPMESSAGE = `\`\`\`Thank you for trying to use DarumaBot!
+
+Commands must begin with -d.  Extra spaces will be removed.
+Valid commands are:
+\tpose
+\tsay
+\temote
+
+Options may be set with flags between -d and the command.
+Valid options are:
+\t-mood
+\t\t:happy
+\t\t:sad
+\t\t:neutral
+\t\t:angry
+\t\t:tired
+
+Example: -d -m:h say Happy hello!\`\`\``
 
 const botToken: string = fs.readFileSync(path.join(__dirname, '..', "bot-token"), "utf8");
 
@@ -14,69 +33,75 @@ client.on("ready", () => {
 });
 
 client.on("messageCreate", (message: Message) => {
-  if (!message.content.trim().toLowerCase().startsWith("-d")) return
-  let seeds = {
-    red: Math.floor(parseInt(message.author.id.substring(0, 6)) % 255),
-    green: Math.floor(parseInt(message.author.id.substring(6, 12)) % 255),
-    blue: Math.floor(parseInt(message.author.id.substring(12, 18)) % 255),
-  }
-  let colorString = `rgb(${seeds.red},${seeds.green},${seeds.blue})`
-  //colorString = `rgb(${255},${255},${255})`
-  let daruma = new Daruma(colorString)
-  message.channel.send({
-      files: [
-          {
-              attachment: daruma.getEmote(),
-              name: `d-emote-${message.author.id}.gif`
-          }
-      ],
-      content: 'Tester'
+    let command = message.content.trim().toLowerCase().replace(/\s+/, ' ').split(" ")
+    if(command[0] !== '-d') return
+    let seeds = {
+        red: Math.floor(parseInt(message.author.id.substring(0, 6)) % 255),
+        green: Math.floor(parseInt(message.author.id.substring(6, 12)) % 255),
+        blue: Math.floor(parseInt(message.author.id.substring(12, 18)) % 255),
     }
-  )
-  let command = message.content.trim().toLowerCase().split(" ")
-  //   switch (command[1]) {
-//     case "neko":
-//       message.channel.send({
-//         files: [
-//           {
-//             attachment: draw.drawNeko(color),
-//             name: `d-neko-${message.author.id}.png`,
-//           },
-//         ],
-//       })
-//       return
-//     case "angry":
-//       message.channel.send({
-//         files: [
-//           {
-//             attachment: draw.drawAngry(color),
-//             name: `d-angr-${message.author.id}.png`,
-//           },
-//         ],
-//       })
-//       return;
-//     case "base":
-//       message.channel.send({
-//         files: [
-//           {
-//             attachment: draw.drawBase(color),
-//             name: `d-base-${message.author.id}.png`,
-//           },
-//         ],
-//       })
-//       return;
-//     case "say":
-//       message.channel.send({
-//         files: [
-//           {
-//             attachment: draw.say(color, message.content.substring(message.content.toLowerCase().indexOf('say') + 3, message.content.length)),
-//             name: `d-say-${message.author.id}.gif`,
-//           },
-//         ],
-//       })
-//       return
-//     default:
-//       return
-//   }
+    let colorString = `rgb(${seeds.red},${seeds.green},${seeds.blue})`
+    //colorString = `rgb(${0},${0},${255})`
+    let daruma = new Daruma(colorString)
+    let tags = []
+    for(let ind = 1; ind < command.length; ind++){
+        if(command[ind]?.startsWith('-')) tags.push(command[ind])
+        else break
+    }
+    for(let tag of tags){
+        let tagSplit = tag.split(':')
+        if('-mood'.startsWith(tagSplit[0])){
+            if(!(tagSplit[1]?.length > 0)) break
+            if('happy'.startsWith(tagSplit[1])) daruma.setMood(Moods.HAPPY)
+            if('neutral'.startsWith(tagSplit[1])) daruma.setMood(Moods.NEUTRAL)
+            if('sad'.startsWith(tagSplit[1])) daruma.setMood(Moods.SAD)
+            if('angry'.startsWith(tagSplit[1])) daruma.setMood(Moods.ANGRY)
+            if('tired'.startsWith(tagSplit[1])) daruma.setMood(Moods.TIRED)
+        }
+    }
+    let primaryCommand = tags.length >= command.length ? '' : command[tags.length+1]
+    if(!primaryCommand){
+        message.reply(HELPMESSAGE)
+        return
+    }
+    let commandInput = message.content.substring(message.content.toLowerCase().indexOf(primaryCommand)+primaryCommand.length, message.content.length)
+    if('pose'.startsWith(primaryCommand)){
+        message.reply({
+            files: [
+                {
+                    attachment: daruma.getPose(),
+                    name: `d-pose-${message.author.id}.png`
+                }
+            ]
+          }
+        )
+        return
+    }
+    if('emote'.startsWith(primaryCommand)){
+        message.reply({
+            files: [
+                {
+                    attachment: daruma.getEmote(),
+                    name: `d-emote-${message.author.id}.gif`
+                }
+            ]
+          }
+        )
+        return
+    }
+    if('say'.startsWith(primaryCommand)){
+        message.reply({
+            files: [
+                {
+                    attachment: daruma.getEmote(),
+                    name: `d-emote-${message.author.id}.gif`
+                }
+            ],
+            content: commandInput
+          }
+        )
+        return
+    }
+    message.reply(HELPMESSAGE)
 });
 client.login(botToken)
