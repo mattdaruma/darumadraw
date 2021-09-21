@@ -119,6 +119,7 @@ class Daruma {
     private getEncoder(){
         let encoder = new GIFEncoder(CANVASSIZE, CANVASSIZE)
         encoder.setTransparent(this.darumaCanvas.colors.backgroundColor)
+        encoder.setDelay(500)
         return encoder
     }
     private animateHappy(){
@@ -184,7 +185,6 @@ class Daruma {
     private animateHappyTalk(){
         let encoder = this.getEncoder()
         encoder.start()
-        encoder.setDelay(500)
         for(let ind = 0; ind < 3; ind++){
             this.drawHappyPose()
             encoder.addFrame(this.darumaCanvas.context)
@@ -201,7 +201,6 @@ class Daruma {
     private animateSadTalk(){
         let encoder = this.getEncoder()
         encoder.start()
-        encoder.setDelay(500)
         for(let ind = 0; ind < 3; ind++){
             this.drawSadPose()
             encoder.addFrame(this.darumaCanvas.context)
@@ -218,7 +217,6 @@ class Daruma {
     private animateNeutralTalk(){
         let encoder = this.getEncoder()
         encoder.start()
-        encoder.setDelay(500)
         for(let ind = 0; ind < 3; ind++){
             this.drawNeutralPose()
             encoder.addFrame(this.darumaCanvas.context)
@@ -235,7 +233,6 @@ class Daruma {
     private animateAngryTalk(){
         let encoder = this.getEncoder()
         encoder.start()
-        encoder.setDelay(500)
         for(let ind = 0; ind < 3; ind++){
             this.drawAngryPose()
             encoder.addFrame(this.darumaCanvas.context)
@@ -252,7 +249,6 @@ class Daruma {
     private animateTiredTalk(){
         let encoder = this.getEncoder()
         encoder.start()
-        encoder.setDelay(500)
         for(let ind = 0; ind < 3; ind++){
             this.drawTiredPose()
             encoder.addFrame(this.darumaCanvas.context)
