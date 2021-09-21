@@ -93,7 +93,7 @@ client.on("messageCreate", (message: Message) => {
         message.reply({
             files: [
                 {
-                    attachment: daruma.getEmote(),
+                    attachment: daruma.getSpeech(),
                     name: `d-emote-${message.author.id}.gif`
                 }
             ],
