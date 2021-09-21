@@ -1,4 +1,4 @@
-const path = require("path");
+const path = require("path")
 const fs = require("fs");
 const botToken = fs.readFileSync(path.join(__dirname, "bot-token"), "utf8");
 const appId = fs.readFileSync(path.join(__dirname, "application-id"), "utf8");
@@ -13,15 +13,15 @@ client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 client.on("messageCreate", (message) => {
-  console.l;
-  if (!message.content.trim().toLowerCase().startsWith("-d")) return;
+  if (!message.content.trim().toLowerCase().startsWith("-d")) return
   let seeds = {
     red: Math.floor(parseInt(message.author.id.substring(0, 6)) % 255),
     green: Math.floor(parseInt(message.author.id.substring(6, 12)) % 255),
     blue: Math.floor(parseInt(message.author.id.substring(12, 18)) % 255),
-  };
-  let color = `rgb(${seeds.red},${seeds.green},${seeds.blue})`;
-  let command = message.content.trim().toLowerCase().split(" ");
+  }
+  let color = `rgb(${seeds.red},${seeds.green},${seeds.blue})`
+  color = 'rgb(255, 0, 0)'
+  let command = message.content.trim().toLowerCase().split(" ")
   switch (command[1]) {
     case "neko":
       message.channel.send({
@@ -31,8 +31,8 @@ client.on("messageCreate", (message) => {
             name: `d-neko-${message.author.id}.png`,
           },
         ],
-      });
-      return;
+      })
+      return
     case "angry":
       message.channel.send({
         files: [
@@ -41,7 +41,7 @@ client.on("messageCreate", (message) => {
             name: `d-angr-${message.author.id}.png`,
           },
         ],
-      });
+      })
       return;
     case "base":
       message.channel.send({
@@ -51,7 +51,7 @@ client.on("messageCreate", (message) => {
             name: `d-base-${message.author.id}.png`,
           },
         ],
-      });
+      })
       return;
     case "say":
       message.channel.send({
@@ -61,10 +61,10 @@ client.on("messageCreate", (message) => {
             name: `d-say-${message.author.id}.gif`,
           },
         ],
-      });
-      return;
+      })
+      return
     default:
-      return;
+      return
   }
 });
-client.login(botToken);
+client.login(botToken)

@@ -1,6 +1,6 @@
 const path = require('path')
 const config = require(path.join(__dirname, 'config.js'))
-const { createCanvas, loadImage } = require('canvas')
+const { createCanvas } = require('canvas')
 const canvas = createCanvas(config.canvasSize, config.canvasSize)
 const ctx = canvas.getContext('2d')
 const Color = require('color')
@@ -9,14 +9,16 @@ const colors = {
     bodyColor: null,
     faceColor: null,
     accentColor: null,
-    outlineColor: null
+    outlineColor: null,
+    backgroundColor: null
 }
 const colorsCalculate = (color) => {
     let primaryColor = Color(color)
     colors.bodyColor = primaryColor
     colors.faceColor = primaryColor.luminosity() > .5 ? Color('#000') : Color('#FFF'),
-    colors.accentColor = Color(`rgb(${255 - primaryColor.rgb().red()}, ${255 - primaryColor.rgb().green()}, ${255 - primaryColor.rgb().blue()})`),
+    colors.accentColor = Color(`rgb(${255 - primaryColor.rgb().red()}, ${primaryColor.rgb().green()}, ${primaryColor.rgb().blue()})`),
     colors.outlineColor = primaryColor.luminosity > .5 ? Color('#FFF') : Color('#000')
+    colors.backgroundColor = Color(`rgb(${primaryColor.rgb().red()}, ${255 - primaryColor.rgb().green()}, ${255 - primaryColor.rgb().blue()})`)
 }
 const clearCanvas = () => {
     ctx.clearRect(0, 0, config.canvasSize, config.canvasSize)
@@ -60,6 +62,11 @@ const drawBase = ()=> {
     ctx.beginPath()
     ctx.arc(config.canvasSize*.4, config.canvasSize*.4, config.canvasSize*.04, 0, 2*Math.PI)
     ctx.fill()
+    ctx.globalCompositeOperation = 'destination-over'
+    ctx.fillStyle = colors.backgroundColor.hex()
+    //ctx.fillStyle = 'rgb(54,57,62)'
+    ctx.fillRect(0, 0, config.canvasSize, config.canvasSize)
+    ctx.globalCompositeOperation = 'source-over'
 }
 
 const drawAngryEyebrows = () => {
@@ -160,11 +167,24 @@ module.exports = {
         initCanvas(color)
         let encoder = new GIFEncoder(config.canvasSize, config.canvasSize)
         encoder.setDelay(500)
+        encoder.setQuality(100)
+        console.log('trans', colors.backgroundColor.hex())
+        encoder.setTransparent(colors.backgroundColor.hex())
         encoder.start()
         drawSmilingMouth()
         drawSpeechText(message)
         encoder.addFrame(ctx)
+        initCanvas(color)
         drawSpeakingMouth()
+        drawSpeechText(message)
+        encoder.addFrame(ctx)
+        initCanvas(color)
+        drawSmilingMouth()
+        drawSpeechText(message)
+        encoder.addFrame(ctx)
+        initCanvas(color)
+        drawSpeakingMouth()
+        drawSpeechText(message)
         encoder.addFrame(ctx)
         encoder.finish()
         return encoder.out.getData()
