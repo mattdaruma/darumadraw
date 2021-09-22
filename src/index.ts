@@ -3,7 +3,7 @@ import fs = require('fs')
 import { Message, Client, Intents} from 'discord.js'
 import { Daruma, Moods } from './daruma'
 
-const HELPMESSAGE = `\`\`\`Thank you for trying to use DarumaBot!
+const HELPMESSAGE = `\`\`\`Thank you for using DarumaBot!
 
 Commands must begin with -d.  Extra spaces will be removed.
 Valid commands are:
@@ -19,8 +19,12 @@ Valid options are:
 \t\t:neutral
 \t\t:angry
 \t\t:tired
+\t-color
+    -rgb(0, 255, 255)
+    -#00F
+    -#0000FF
 
-Example: -d -m:h say Happy hello!\`\`\``
+Example: -d -m:h -c:#F00 say Happy hello!\`\`\``
 
 const botToken: string = fs.readFileSync(path.join(__dirname, '..', "bot-token"), "utf8");
 
@@ -41,8 +45,8 @@ client.on("messageCreate", (message: Message) => {
         blue: Math.floor(parseInt(message.author.id.substring(12, 18)) % 255),
     }
     let colorString = `rgb(${seeds.red},${seeds.green},${seeds.blue})`
-    //colorString = `rgb(${0},${0},${255})`
-    let daruma = new Daruma(colorString)
+    let daruma = new Daruma()
+    daruma.setColor(colorString)
     let tags = []
     for(let ind = 1; ind < command.length; ind++){
         if(command[ind]?.startsWith('-')) tags.push(command[ind])
@@ -58,10 +62,14 @@ client.on("messageCreate", (message: Message) => {
             if('angry'.startsWith(tagSplit[1])) daruma.setMood(Moods.ANGRY)
             if('tired'.startsWith(tagSplit[1])) daruma.setMood(Moods.TIRED)
         }
+        if('-color'.startsWith(tagSplit[0])){
+            if(!(tagSplit[1]?.length > 0)) break
+            daruma.setColor(tagSplit[1])
+        }
     }
     let primaryCommand = tags.length >= command.length ? '' : command[tags.length+1]
     if(!primaryCommand){
-        message.reply(HELPMESSAGE)
+        message.reply(`Invalid command received: ${primaryCommand}`)
         return
     }
     let commandInput = message.content.substring(message.content.toLowerCase().indexOf(primaryCommand)+primaryCommand.length, message.content.length)
@@ -102,6 +110,10 @@ client.on("messageCreate", (message: Message) => {
         )
         return
     }
-    message.reply(HELPMESSAGE)
+    if('help'.startsWith(primaryCommand)){
+        message.reply(HELPMESSAGE)
+        return
+    }
+    message.reply(`Invalid command received: ${primaryCommand}`)
 });
 client.login(botToken)

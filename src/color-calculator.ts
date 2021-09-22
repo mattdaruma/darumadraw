@@ -8,6 +8,8 @@ interface DarumaColors {
     accentColor: string
 }
 const colorCalculate = (color: string): DarumaColors => {
+    color = color?.replace('\'', '').replace('"', '')
+    if(!color) color='#F00'
     let primaryColor = new Color(color)
     if(primaryColor.luminosity() < .2) primaryColor = primaryColor.lightness(20)
     if(primaryColor.luminosity() > .8) primaryColor = primaryColor.lightness(80)

@@ -4,8 +4,11 @@ const GIFEncoder = require('gif-encoder-2')
 class Daruma {
     darumaCanvas: DarumaCanvas
     mood: Moods = Moods.NEUTRAL
-    constructor(color: string){
-        this.darumaCanvas = new DarumaCanvas(colorCalculate(color))
+    constructor(){
+        this.darumaCanvas = new DarumaCanvas()
+    }
+    setColor(color: string){
+        this.darumaCanvas.colors = colorCalculate(color)
     }
     setMood(mood: Moods){
         this.mood = mood
