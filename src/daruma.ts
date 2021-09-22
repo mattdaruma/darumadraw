@@ -16,7 +16,8 @@ class Daruma {
         this.darumaEncoder = new DarumaEncoder(this.darumaCanvas)
     }
     setColor(color: string){
-        this.darumaCanvas.colors = colorCalculate(color)
+        this.darumaCanvas.setColor(colorCalculate(color))
+        console.warn('outline', this.darumaCanvas.colors.outlineColor, this.darumaCanvas.colors.faceColor)
     }
     setMood(mood: Moods){
         this.mood = mood
