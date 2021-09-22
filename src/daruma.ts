@@ -1,6 +1,9 @@
 import { DarumaCanvas } from './daruma-canvas'
 import { colorCalculate } from './color-calculator'
 import { CANVASSIZE } from './canvas-size'
+import { drawBlankDaruma } from './draw/draw-blank-daruma'
+import { drawEyes } from './draw/draw-eyes'
+import { talkingHappy } from './animate/talking-happy'
 const GIFEncoder = require('gif-encoder-2')
 class Daruma {
     darumaCanvas: DarumaCanvas
@@ -15,15 +18,7 @@ class Daruma {
         this.mood = mood
     }
     private drawBlank(){
-        this.darumaCanvas.clearCanvas()
-        this.darumaCanvas.drawBody()
-        this.darumaCanvas.drawFace()
-        this.darumaCanvas.drawDots()
-    }
-    private drawHappyPose(){
-        this.drawBlank()
-        this.darumaCanvas.drawMouthSmile()
-        this.darumaCanvas.drawEyesHappy()
+        drawBlankDaruma(this.darumaCanvas)
     }
     private drawHappySpeak(){
         this.drawBlank()
@@ -48,7 +43,7 @@ class Daruma {
     private drawSadSpeak(){
         this.drawBlank()
         this.darumaCanvas.drawMouthSpeak()
-        this.darumaCanvas.drawEyesSad()
+        drawEyes(this.darumaCanvas, -1)
     }
     private drawSadBlink(){
         this.drawBlank()
@@ -58,85 +53,68 @@ class Daruma {
     private drawSadBlinkSpeak(){
         this.drawBlank()
         this.darumaCanvas.drawMouthSpeak()
-        this.darumaCanvas.drawEyesBlinkDown()
-    }
-    private drawNeutralPose(){
-        this.drawBlank()
-        this.darumaCanvas.drawMouthStraight()
-        this.darumaCanvas.drawEyes()
+        drawEyes(this.darumaCanvas, -1, 1)
     }
     private drawNeutralSpeak(){
         this.drawBlank()
         this.darumaCanvas.drawMouthSpeak()
-        this.darumaCanvas.drawEyesOpen()
+        drawEyes(this.darumaCanvas)
     }
     private drawNeutralBlink(){
         this.drawBlank()
         this.darumaCanvas.drawMouthStraight()
-        this.darumaCanvas.drawEyesBlink()
+        drawEyes(this.darumaCanvas, undefined, 1)
     }
     private drawNeutralBlinkSpeak(){
         this.drawBlank()
         this.darumaCanvas.drawMouthSpeak()
-        this.darumaCanvas.drawEyesBlink()
+        drawEyes(this.darumaCanvas, undefined, 1)
     }
     private drawAngryPose(){
         this.drawBlank()
         this.darumaCanvas.drawMouthStraight()
-        this.darumaCanvas.drawEyesAngry()
+        drawEyes(this.darumaCanvas, 1)
     }
     private drawAngrySpeak(){
         this.drawBlank()
         this.darumaCanvas.drawMouthSpeak()
-        this.darumaCanvas.drawEyesAngry()
+        drawEyes(this.darumaCanvas, 1)
     }
     private drawAngryBlink(){
         this.drawBlank()
         this.darumaCanvas.drawMouthStraight()
-        this.darumaCanvas.drawEyesBlink()
+        drawEyes(this.darumaCanvas, undefined, 1)
     }
     private drawAngryBlinkSpeak(){
         this.drawBlank()
         this.darumaCanvas.drawMouthSpeak()
-        this.darumaCanvas.drawEyesBlink()
+        drawEyes(this.darumaCanvas, undefined, 1)
     }
     private drawTiredPose(){
         this.drawBlank()
         this.darumaCanvas.drawMouthStraight()
-        this.darumaCanvas.drawEyesTired()
+        drawEyes(this.darumaCanvas, 0)
     }
     private drawTiredSpeak(){
         this.drawBlank()
         this.darumaCanvas.drawMouthSpeak()
-        this.darumaCanvas.drawEyesTired()
+        drawEyes(this.darumaCanvas, 0)
     }
     private drawTiredBlink(){
         this.drawBlank()
         this.darumaCanvas.drawMouthStraight()
-        this.darumaCanvas.drawEyesBlink()
+        drawEyes(this.darumaCanvas, undefined, 1)
     }
     private drawTiredBlinkSpeak(){
         this.drawBlank()
         this.darumaCanvas.drawMouthSpeak()
-        this.darumaCanvas.drawEyesBlink()
+        drawEyes(this.darumaCanvas, undefined, 1)
     }
     private getEncoder(){
         let encoder = new GIFEncoder(CANVASSIZE, CANVASSIZE)
         encoder.setTransparent(this.darumaCanvas.colors.backgroundColor)
         encoder.setDelay(500)
         return encoder
-    }
-    private animateHappy(){
-        let encoder = this.getEncoder()
-        encoder.setDelay(3000)
-        encoder.start()
-        this.drawHappyPose()
-        encoder.addFrame(this.darumaCanvas.context)
-        this.drawHappyBlink()
-        encoder.setDelay(300)
-        encoder.addFrame(this.darumaCanvas.context)
-        encoder.finish()
-        return encoder.out.getData()
     }
     private animateSad(){
         let encoder = this.getEncoder()
@@ -154,7 +132,9 @@ class Daruma {
         let encoder = this.getEncoder()
         encoder.setDelay(3000)
         encoder.start()
-        this.drawNeutralPose()
+        this.drawBlank()
+        this.darumaCanvas.drawMouthStraight()
+        drawEyes(this.darumaCanvas)
         encoder.addFrame(this.darumaCanvas.context)
         this.drawNeutralBlink()
         encoder.setDelay(300)
@@ -186,22 +166,6 @@ class Daruma {
         encoder.finish()
         return encoder.out.getData()
     }
-    private animateHappyTalk(){
-        let encoder = this.getEncoder()
-        encoder.start()
-        for(let ind = 0; ind < 3; ind++){
-            this.drawHappyPose()
-            encoder.addFrame(this.darumaCanvas.context)
-            this.drawHappySpeak()
-            encoder.addFrame(this.darumaCanvas.context)
-        }
-        this.drawHappyBlink()
-        encoder.addFrame(this.darumaCanvas.context)
-        this.drawHappyBlinkSpeak()
-        encoder.addFrame(this.darumaCanvas.context)
-        encoder.finish()
-        return encoder.out.getData()
-    }
     private animateSadTalk(){
         let encoder = this.getEncoder()
         encoder.start()
@@ -222,7 +186,9 @@ class Daruma {
         let encoder = this.getEncoder()
         encoder.start()
         for(let ind = 0; ind < 3; ind++){
-            this.drawNeutralPose()
+            this.drawBlank()
+            this.darumaCanvas.drawMouthStraight()
+            drawEyes(this.darumaCanvas)
             encoder.addFrame(this.darumaCanvas.context)
             this.drawNeutralSpeak()
             encoder.addFrame(this.darumaCanvas.context)
@@ -269,13 +235,17 @@ class Daruma {
     getPose(){
         switch(this.mood){
             case Moods.HAPPY:
-                this.drawHappyPose()
+                this.drawBlank()
+                this.darumaCanvas.drawMouthSmile()
+                this.darumaCanvas.drawEyesHappy()
                 break
             case Moods.SAD:
                 this.drawSadPose()
                 break
             case Moods.NEUTRAL:
-                this.drawNeutralPose()
+                drawBlankDaruma(this.darumaCanvas)
+                drawEyes(this.darumaCanvas)
+                this.darumaCanvas.drawMouth()
                 break
             case Moods.ANGRY:
                 this.drawAngryPose()
@@ -284,7 +254,9 @@ class Daruma {
                 this.drawTiredPose()
                 break
             default:
-                this.drawNeutralPose()
+                this.drawBlank()
+                this.darumaCanvas.drawMouthStraight()
+                drawEyes(this.darumaCanvas)
                 break
         }
         return this.darumaCanvas.canvas.toBuffer('image/png')
@@ -292,7 +264,18 @@ class Daruma {
     getEmote(){
         switch(this.mood){
             case Moods.HAPPY:
-                return this.animateHappy()
+                let encoder = this.getEncoder()
+                encoder.setDelay(3000)
+                encoder.start()
+                this.drawBlank()
+                this.darumaCanvas.drawMouthSmile()
+                this.darumaCanvas.drawEyesHappy()
+                encoder.addFrame(this.darumaCanvas.context)
+                this.drawHappyBlink()
+                encoder.setDelay(300)
+                encoder.addFrame(this.darumaCanvas.context)
+                encoder.finish()
+                return encoder.out.getData()
             case Moods.NEUTRAL: 
                 return this.animateNeutral()
             case Moods.SAD:
@@ -308,7 +291,7 @@ class Daruma {
     getSpeech(){
         switch(this.mood){
             case Moods.HAPPY:
-                return this.animateHappyTalk()
+                return talkingHappy(this.getEncoder(), this.darumaCanvas)
             case Moods.NEUTRAL: 
                 return this.animateNeutralTalk()
             case Moods.SAD:

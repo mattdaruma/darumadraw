@@ -5,6 +5,8 @@ import { drawBody } from './draw/draw-body'
 import { drawDots } from './draw/draw-dots'
 import { drawEyes } from './draw/draw-eyes'
 import { drawFace } from './draw/draw-face'
+import { drawMouth } from './draw/draw-mouth'
+import { drawBlankDaruma } from './draw/draw-blank-daruma'
 const STROKEWIDTH = 3
 class DarumaCanvas {
     colors: DarumaColors = {
@@ -24,15 +26,6 @@ class DarumaCanvas {
     }
     clearCanvas(){
         this.context.clearRect(0, 0, CANVASSIZE, CANVASSIZE)
-    }
-    drawBody(){
-        drawBody(this.colors, this.context)
-    }
-    drawFace(){
-        drawFace(this.colors, this.context)
-    }
-    drawEyes(tilt?: number, closed?: number){
-        drawEyes(this.colors, this.context, tilt, closed)
     }
     drawEyesOpen(){
         this.context.beginPath()
@@ -128,8 +121,8 @@ class DarumaCanvas {
         this.context.arc(CANVASSIZE*.6, CANVASSIZE*.4, CANVASSIZE*.05, 0, Math.PI)
         this.context.stroke()
     }
-    drawDots(){
-        drawDots(this.colors, this.context)
+    drawMouth(){
+        drawMouth(this.colors, this.context)
     }
     drawMouthSmile(openness: number = 0){
         this.context.beginPath()
