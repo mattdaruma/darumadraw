@@ -1,6 +1,10 @@
 import { createCanvas, Canvas, NodeCanvasRenderingContext2D } from 'canvas'
+import { CANVASSIZE } from './canvas-size'
 import { DarumaColors } from './color-calculator'
-const CANVASSIZE = 200
+import { drawBody } from './draw/draw-body'
+import { drawDots } from './draw/draw-dots'
+import { drawEyes } from './draw/draw-eyes'
+import { drawFace } from './draw/draw-face'
 const STROKEWIDTH = 3
 class DarumaCanvas {
     colors: DarumaColors = {
@@ -22,17 +26,13 @@ class DarumaCanvas {
         this.context.clearRect(0, 0, CANVASSIZE, CANVASSIZE)
     }
     drawBody(){
-        this.context.fillStyle = this.colors.bodyColor
-        this.context.beginPath()
-        this.context.arc(CANVASSIZE*.5, CANVASSIZE*.5, CANVASSIZE*.3, 0, 2*Math.PI)
-        this.context.fill()
+        drawBody(this.colors, this.context)
     }
     drawFace(){
-        this.context.fillStyle = this.colors.faceColor
-        this.context.beginPath()
-        this.context.arc(CANVASSIZE*.5, CANVASSIZE*.5, CANVASSIZE*.25, Math.PI - .5, 2*Math.PI+.5)
-        this.context.closePath()
-        this.context.fill()
+        drawFace(this.colors, this.context)
+    }
+    drawEyes(tilt?: number, closed?: number){
+        drawEyes(this.colors, this.context, tilt, closed)
     }
     drawEyesOpen(){
         this.context.beginPath()
@@ -129,20 +129,23 @@ class DarumaCanvas {
         this.context.stroke()
     }
     drawDots(){
-        this.context.fillStyle = this.colors.accentColor
-        this.context.beginPath()
-        this.context.arc(CANVASSIZE*.36, CANVASSIZE*.69, CANVASSIZE*.03, 0, 2*Math.PI)
-        this.context.fill()
-        this.context.beginPath()
-        this.context.arc(CANVASSIZE*.5, CANVASSIZE*.69, CANVASSIZE*.03, 0, 2*Math.PI)
-        this.context.fill()
-        this.context.beginPath()
-        this.context.arc(CANVASSIZE*.63, CANVASSIZE*.69, CANVASSIZE*.03, 0, 2*Math.PI)
-        this.context.fill()
+        drawDots(this.colors, this.context)
     }
-    drawMouthSmile(){
+    drawMouthSmile(openness: number = 0){
         this.context.beginPath()
         this.context.arc(CANVASSIZE*.5, CANVASSIZE*.5, CANVASSIZE*.1, 0, Math.PI)
+        this.context.arc(CANVASSIZE*.5, CANVASSIZE*.5, CANVASSIZE*.1, .5*Math.PI*openness, Math.PI - .5*Math.PI*openness)
+        this.context.stroke()
+    }
+    drawMouthFrown(openness: number = 0){
+        this.context.beginPath()
+        this.context.arc(CANVASSIZE*.5, CANVASSIZE*.6, CANVASSIZE*.1, Math.PI, Math.PI*2)
+        this.context.stroke()
+    }
+    drawMouthStraight(openness: number = 0){
+        this.context.beginPath()
+        this.context.moveTo(CANVASSIZE*.4, CANVASSIZE*.55)
+        this.context.lineTo(CANVASSIZE*.6, CANVASSIZE*.55)
         this.context.stroke()
     }
     drawMouthSpeak(){
@@ -151,17 +154,6 @@ class DarumaCanvas {
         this.context.arc(CANVASSIZE*.5, CANVASSIZE*.55, CANVASSIZE*.05, 0, 2*Math.PI)
         this.context.stroke()
         this.context.fill()
-    }
-    drawMouthFrown(){
-        this.context.beginPath()
-        this.context.arc(CANVASSIZE*.5, CANVASSIZE*.6, CANVASSIZE*.1, Math.PI, Math.PI*2)
-        this.context.stroke()
-    }
-    drawMouthStraight(){
-        this.context.beginPath()
-        this.context.moveTo(CANVASSIZE*.4, CANVASSIZE*.55)
-        this.context.lineTo(CANVASSIZE*.6, CANVASSIZE*.55)
-        this.context.stroke()
     }
 }
 export { DarumaCanvas, CANVASSIZE }

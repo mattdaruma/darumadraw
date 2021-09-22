@@ -1,5 +1,6 @@
-import { DarumaCanvas, CANVASSIZE } from './daruma-canvas'
+import { DarumaCanvas } from './daruma-canvas'
 import { colorCalculate } from './color-calculator'
+import { CANVASSIZE } from './canvas-size'
 const GIFEncoder = require('gif-encoder-2')
 class Daruma {
     darumaCanvas: DarumaCanvas
@@ -62,7 +63,7 @@ class Daruma {
     private drawNeutralPose(){
         this.drawBlank()
         this.darumaCanvas.drawMouthStraight()
-        this.darumaCanvas.drawEyesOpen()
+        this.darumaCanvas.drawEyes(0)
     }
     private drawNeutralSpeak(){
         this.drawBlank()
