@@ -1,12 +1,7 @@
 import { createCanvas, Canvas, NodeCanvasRenderingContext2D } from 'canvas'
 import { CANVASSIZE } from './canvas-size'
 import { DarumaColors } from './color-calculator'
-import { drawBody } from './draw/draw-body'
-import { drawDots } from './draw/draw-dots'
-import { drawEyes } from './draw/draw-eyes'
-import { drawFace } from './draw/draw-face'
 import { drawMouth } from './draw/draw-mouth'
-import { drawBlankDaruma } from './draw/draw-blank-daruma'
 const STROKEWIDTH = 3
 class DarumaCanvas {
     colors: DarumaColors = {
@@ -23,9 +18,19 @@ class DarumaCanvas {
         this.context = this.canvas.getContext('2d')
         this.context.lineWidth = STROKEWIDTH
         this.context.strokeStyle = this.colors.outlineColor
+        this.context.save()
     }
     clearCanvas(){
         this.context.clearRect(0, 0, CANVASSIZE, CANVASSIZE)
+    }
+    restore(){
+        this.context.restore()
+    }
+    rotate(rotation: number){
+        this.context.setTransform(0,1,-1,0,this.canvas.width,0);
+        // this.context.translate(CANVASSIZE/2, CANVASSIZE/2)
+        // this.context.rotate(rotation)
+        // this.context.translate(-CANVASSIZE/2, -CANVASSIZE/2)
     }
     drawEyesOpen(){
         this.context.beginPath()
@@ -120,9 +125,6 @@ class DarumaCanvas {
         this.context.beginPath()
         this.context.arc(CANVASSIZE*.6, CANVASSIZE*.4, CANVASSIZE*.05, 0, Math.PI)
         this.context.stroke()
-    }
-    drawMouth(){
-        drawMouth(this.colors, this.context)
     }
     drawMouthSmile(openness: number = 0){
         this.context.beginPath()

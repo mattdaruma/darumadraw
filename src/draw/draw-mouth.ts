@@ -1,9 +1,9 @@
 import { NodeCanvasRenderingContext2D } from "canvas";
 import { DarumaColors } from "../color-calculator";
-import { CANVASSIZE } from "../daruma-canvas";
+import { CANVASSIZE, DarumaCanvas } from "../daruma-canvas";
 
-const drawMouth = (colors: DarumaColors, context: NodeCanvasRenderingContext2D, curve: number = 0, open: number = 0) => {
-    context.fillStyle = colors.outlineColor
+const drawMouth = (darumaCanvas: DarumaCanvas, curve: number = 0, open: number = 0) => {
+    darumaCanvas.context.fillStyle = darumaCanvas.colors.outlineColor
     let qpi = Math.PI/4
     if(curve === 0 || curve < -1 || curve > 1) curve = .1
     if(open < 0 || open > 1) open = 0
@@ -19,13 +19,13 @@ const drawMouth = (colors: DarumaColors, context: NodeCanvasRenderingContext2D, 
         endR = [startR, startR=endR][0]
         endRSpeak = [-startRSpeak, startRSpeak=-endRSpeak][0]
     }
-    context.beginPath()
-    context.ellipse(CANVASSIZE*.5, CANVASSIZE*.53, CANVASSIZE*.1, height, 0, startR, endR)
-    context.stroke()
-    context.beginPath()
-    context.ellipse(CANVASSIZE*.5, CANVASSIZE*.53, CANVASSIZE*.1, height, 0, startRSpeak, endRSpeak)
-    context.fill()
-    context.stroke()
+    darumaCanvas.context.beginPath()
+    darumaCanvas.context.ellipse(CANVASSIZE*.5, CANVASSIZE*.53, CANVASSIZE*.1, height, 0, startR, endR)
+    darumaCanvas.context.stroke()
+    darumaCanvas.context.beginPath()
+    darumaCanvas.context.ellipse(CANVASSIZE*.5, CANVASSIZE*.53, CANVASSIZE*.1, height, 0, startRSpeak, endRSpeak)
+    darumaCanvas.context.fill()
+    darumaCanvas.context.stroke()
 }
 
 export { drawMouth }
