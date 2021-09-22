@@ -63,7 +63,7 @@ class Daruma {
     private drawNeutralPose(){
         this.drawBlank()
         this.darumaCanvas.drawMouthStraight()
-        this.darumaCanvas.drawEyes(0)
+        this.darumaCanvas.drawEyes()
     }
     private drawNeutralSpeak(){
         this.drawBlank()
